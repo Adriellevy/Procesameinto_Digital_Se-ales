@@ -89,26 +89,81 @@ clc; clear;
 % legend('Señal Continua', 'Muestreada');
 
 %Ejercicio 5
-%Se hace uso de la funcion impz en mi Funcion_Respuesta_discreta
+% %Se hace uso de la funcion impz en mi Funcion_Respuesta_discreta
+%  
+% A = [1 0.7 -0.45 -0.6]; %terminos que acompañan a las y
+% B = [0.8 -0.44 0.16 0.02];  %terminos que acompañan a las x
+% N = 100;
+% Funcion_Respuesta_discreta(B,A,N);
+ 
+ 
+% %Ejercicio 6
+% %Se hace uso de la funcion impz
+% %Inciso a
 
-A = [1 0.7 -0.45 -0.6]; %terminos que acompañan a las y
-B = [0.8 -0.44 0.16 0.02];  %terminos que acompañan a las x
-N = 50;
-Funcion_Respuesta_discreta(A,B,N)
-
-
-%Ejercicio 6
-%Se hace uso de la funcion impz
-%Inciso a
 
 %Inciso b
-A = [1 0 0.9]; %terminos que acompañan a las y
-B = [.3 .6 .3];  %terminos que acompañan a las x
-N = 163;
-figure(1)
-Funcion_Respuesta_discreta(A,B,N)
+% A = [1 0 0.9]; %terminos que acompaniann a las y
+% B = [.3 .6 .3];  %terminos que acompanian a las x
+% N = 163;
+% figure(1)
+% Funcion_Respuesta_discreta(A,B,N)
 
-A = [1 1.8*cos(pi/16) 0.81]; 
-B = [1 1/2 0];
-figure(2)
-Funcion_Respuesta_discreta(A,B,N)
+% A = [1 1.8*cos(pi/16) 0.81]; 
+% B = [1 1/2 0];
+% figure(1)
+% subplot(4,1,1)
+% H6b = Funcion_Respuesta_discreta(B,A,N);
+
+%Ejercicio 7
+% %Mismos vectores A B que el ejercicio 6 b2 
+%A
+
+% [x,Esc] = Escalon(100,1); 
+% Esc = Esc * 3;
+% subplot(4,1,2)
+% stem(x,Esc)
+% Salida = conv(H6b,Esc);
+% subplot(4,1,3)
+% stem(1:100,Salida(1:100));
+
+% %B
+[x,Escal] = Escalon(100,1); 
+% Esc = Esc * 15;
+% Salida = conv(H6b,Esc);
+% subplot(4,1,4)
+% stem(1:100,Salida(1:100));
+
+%Ejercicio 8
+%Pulso
+% [x, Func]= Pulso(50,100,1);
+% plot(x,Func)
+
+%AmplitudModulada
+% Longitud = 1000;  
+% AmplitudMensajera = 5;  
+% ModuloMensajera = 0.8;  
+% frecuenciaMensajera = 0.005;  
+% frecuenciaSenial = 0.2;  
+% [x, Func] = Amplitud_Modulada(Longitud, AmplitudMensajera, ModuloMensajera, frecuenciaMensajera, frecuenciaSenial);
+
+%Exponencial
+% [x, Func] = ExponencialDecayente(100,1,20,-0.04);
+% plot(x, Func); 
+
+%Frecuencia Modulada
+% [x, Func] = Frecuencia_Modulada(1, 10, 2, 1, 1, 1000);
+% plot(x,Func)
+
+%Funcion Sinc
+% [x, Func] = Funcion_Sinc(100,1/pi,20);
+% plot(Func)
+
+%Se�al Amortiguada
+[x, seno_amortiguado] = Funcion_seno_Amortiguada(100,100,10/pi,-0.04);
+% plot(Func)
+
+%Ej9
+Resultado =conv(Escal,seno_amortiguado);
+Resultado = Resultado(1:100);
+plot(Resultado)
