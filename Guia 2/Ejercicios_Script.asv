@@ -2,16 +2,16 @@
 % %----------------Ejercicio 1----------------
 % %[t,y]=Funcion_seno_Amortiguada(10,10^-3,1,2,-0.5); 
 % %[t,y]=Funcion_Sinc(10,10^-3,1,25); 
-[t,y]=Pulso(0,500,0,40,1);
+[t,y]=Pulso(0,160,0,40,1);
 
 %TFS freqz
-[TFS, w] = freqz(y,1,250);
+[FuncionRespuestaZ, w] = freqz(y,1,160);
+
+% TFS Home made
 N = length(y);
-% % TFS Home made
-% N = length(y);
-% k = -N/2:N/2-1; %Divido el eje en 2 para que concuerde con tdf
-% Z = exp(1j*2*pi*k/N); % Defino la variable Z
-% TFSHomeMade = polyval(y, Z); % Evaluar la funcion en Z
+k = -N/2:N/2-1; %Divido el eje en 2 para que concuerde con tdf
+Z = exp(1j*2*pi*k/N); % Defino la variable Z
+FuncionRespuestaZHomeMade = polyval(y, Z); % Evaluar la funcion en Z
 
 %Transformada Discreta de Fourrier
 FuncionRespuestaFourrier = fft(y);
@@ -20,41 +20,55 @@ frecuencia_fft = linspace(0, 2*pi, N); % Asegurar que ambas transformadas coinci
 
 % Graficos
 figure(1);
-subplot(2, 3,[1,4]);
+subplot(2, 4,[1,5]);
 stem(t, y);
 grid on;
 xlabel('Tiempo (s)');
 ylabel('Amplitud');
 title('Pulso');
 %axis([-80 80 -2 2]);
-subplot(2, 3, 2);
-plot(abs(TFS))
+subplot(2, 4, 2);
+plot(w,abs(FuncionRespuestaZ))
 title('Modulo de la TFS');
-xlabel('Posicion Memoria');
+xlabel('Re(Z)');
 ylabel('|X(z)|');
 grid on;
 
-subplot(2, 3, 5);
-plot(angle(TFS))
+subplot(2, 4, 6);
+plot(w,angle(FuncionRespuestaZ))
 title('Fase de la TFS');
-xlabel('Posicion Memoria');
+xlabel('Re(Z)');
 ylabel('Fase X(z)');
 grid on;
 %axis([-4 4 -4 4]);
 
-subplot(2, 3, 3);
-plot(abs(FuncionRespuestaFourrier(1:N/2)))
+subplot(2, 4, 3);
+plot(frecuencia_fft(1:N/2),abs(FuncionRespuestaFourrier(1:N/2)))
 title('Modulo de la TDF');
-xlabel('Posicion Memoria');
+xlabel('t');
 ylabel('|X(w)|');
 grid on;
-subplot(2, 3, 6);
-plot(angle(FuncionRespuestaFourrier(1:N/2)))
+subplot(2, 4, 7);
+plot(frecuencia_fft(1:N/2),angle(FuncionRespuestaFourrier(1:N/2)))
 title('Fase de la TDF');
-xlabel('Posicion Memoria');
+xlabel('t');
 ylabel('Fase X(w)');
 grid on;
 
+subplot(2, 4, 4);
+plot(k(length(k)/2:end),abs(FuncionRespuestaZHomeMade(length(k)/2:end)))
+title('Modulo de la TFS a mano');
+xlabel('Re(Z)');
+ylabel('|X(z)|');
+grid on;
+axis([0 80 0 60]);
+
+subplot(2, 4, 8);
+plot(k(length(k)/2:end),angle(FuncionRespuestaZHomeMade(length(k)/2:end)))
+title('Fase de la TFS a mano');
+xlabel('Re(Z)');
+ylabel('Fase X(z)');
+grid on;
 
 %----------------Ejercicio 2----------------
 
