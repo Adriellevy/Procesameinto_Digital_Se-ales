@@ -70,11 +70,11 @@
 % grid on;
 % xlabel('Tiempo (s)');
 % ylabel('Amplitud');
-% title('Señal Trigonométrica Acotada');
+% title('SeÃ±al TrigonomÃ©trica Acotada');
 % 
 % subplot(2,4, 2);
 % plot(abs(ffta))
-% title('Módulo de la T.F. sin desplazamiento');
+% title('MÃ³dulo de la T.F. sin desplazamiento');
 % xlabel('Re(Z)');
 % ylabel('|X(z)|');
 % grid on;
@@ -91,11 +91,11 @@
 % grid on;
 % xlabel('Tiempo (s)');
 % ylabel('Amplitud');
-% title('Señal Trigonométrica Acotada');
+% title('SeÃ±al TrigonomÃ©trica Acotada');
 % 
 % subplot(2,4, 4);
 % plot(abs(fftb))
-% title('Módulo de la T.F. con desplazamiento');
+% title('MÃ³dulo de la T.F. con desplazamiento');
 % xlabel('Re(Z)');
 % ylabel('|X(z)|');
 % grid on;
@@ -112,12 +112,12 @@
 % % Definir la secuencia na[n] en un intervalo de longitud N
 % N = 8; % Definir longitud de la secuencia para la DFT
 % n = 0:N-1;
-% na = [1, -2, zeros(1, N-2)]; % δ[n] - 2δ[n-1]
+% na = [1, -2, zeros(1, N-2)]; % Î´[n] - 2Î´[n-1]
 % 
 % % Calcular la DFT de na[n]
 % Na = fft(na, N);
 % 
-% % Evitar división por cero
+% % Evitar divisiÃ³n por cero
 % Na(abs(Na) < 1e-6) = 1e-6;
 % 
 % % Calcular la inversa en el dominio de la frecuencia
@@ -126,7 +126,7 @@
 % % Calcular la secuencia nb[n] aplicando la IDFT
 % nb = ifft(Nb, N);
 % 
-% % Verificación: Convolución de na[n] con nb[n]
+% % VerificaciÃ³n: ConvoluciÃ³n de na[n] con nb[n]
 % conv_result = conv(na, nb, 'same');
 % 
 % % Graficar los resultados
@@ -143,7 +143,7 @@
 % 
 % subplot(3,1,3);
 % stem(n, real(conv_result), 'filled');
-% title('Resultado de la Convolución (Debe ser δ[n])');
+% title('Resultado de la ConvoluciÃ³n (Debe ser Î´[n])');
 % xlabel('n'); ylabel('Amplitud');
 
 
@@ -153,24 +153,24 @@
 % N = length(a);
 % Factor = 3;
 % Func = Sobre_Muestreo(a,Factor);
-% % Visualizaci�n de resultados
+% % Visualización de resultados
 % figure(1);  
 % stem(0:N*Factor-1, Func, 'filled');
 % legend('Sobremuestreada');
-% title('Sobremuestreo de la se�al');
+% title('Sobremuestreo de la señal');
 %----------------Ejercicio 5----------------
 % 
 % a = [2 1 5 7 3 9]; 
 % N = length(a);
 % Factor = 2;
 % Func = Sub_Muestreo(a,Factor);
-% % Visualizaci�n de resultados
+% % Visualización de resultados
 % figure(2);  
 % stem(1:N,a, 'b');
 % hold on
 % stem(1:Factor:N, Func, 'r');
 % xlim([1 N]);
-% title('SubMuestreo de la se�al');
+% title('SubMuestreo de la señal');
 
 %Ejercicios 6 y 7 son fft (se ignoran)
 %----------------Ejercicio 8----------------
@@ -227,13 +227,12 @@
 % Leer archivo .wav
 [x, fs] = audioread('introBlackDog.wav');
 
-% Si es est�reo, lo pasamos a mono
+% Si es estéreo, lo pasamos a mono
 if size(x,2) > 1
     x = mean(x, 2);
 end
-Modo='energia';
-Valor=50;
-x_filtrada = FiltroPorNivel(x,Valor, Modo);
+
+x_filtrada = FiltroPorNivel(x,70, 'energia');
 
 % Graficar original y filtrada
 t = (0:length(x)-1)/fs;
@@ -247,7 +246,7 @@ ylabel('Amplitud');
 
 subplot(2,1,2);
 plot(t, x_filtrada);
-title(sprintf('Filtrada por %s y valor: %0.f', Modo, Valor))
+title(['Filtrada por Nivel - Modo y Valor: ',Modo, Valor]);
 xlabel('Tiempo (s)');
 ylabel('Amplitud');
 
@@ -255,11 +254,11 @@ ylabel('Amplitud');
 % title('Fourrier');
 % xlabel('Memoria');
 % ylabel('|W(s)|');
-% Escuchar se�al original y filtrada
-% disp('Reproduciendo se�al original...');
+% Escuchar señal original y filtrada
+% disp('Reproduciendo señal original...');
 % sound(x, fs);
 % pause(length(x)/fs + 1);
 
-disp('Reproduciendo se�al filtrada...');
+disp('Reproduciendo señal filtrada...');
 sound(x_filtrada, fs);
 

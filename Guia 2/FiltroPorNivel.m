@@ -1,36 +1,43 @@
-function x_filtrada = FiltroPorNivel(x, modo, L)
-    % x: Señal de entrada (vector de tiempo)
-    % modo: 'amplitud' o 'energia'
-    % L: umbral (si es 'amplitud', L es el valor de corte; si es 'energia', L es el porcentaje [0-1])
-    
-    N = length(x);
-    X = fft(x);               % Transformada de Fourier
-    A = abs(X);               % Magnitud espectral
-    
+function x_filtrada = FiltroPorNivel(x, L, modo)
+    % x           : Señal original
+    % L           : Nivel de umbral (valor absoluto o porcentaje)
+    % modo        : 'amplitud' o 'energia'
+    %
+    % x_filtrada  : Señal filtrada
+
+    X = fft(x);             % Transformada
+    X_mag = abs(X);         % Magnitud
+    N = length(X);
+
     switch lower(modo)
         case 'amplitud'
-            % Umbral por amplitud
-            X_filtrado = X .* (A >= L);
-            
+            % Eliminar componentes con magnitud menor al umbral
+            X(X_mag < L) = 0;
+
         case 'energia'
-            % Umbral por energía
-            [~, idx] = sort(A, 'descend'); % ordenar componentes por magnitud
-            energia_total = sum(A.^2);
+            % Calcular energía total
+            energia_total = sum(X_mag.^2);
+
+            % Ordenar y calcular energía acumulada
+            energia = X_mag.^2;
+            [~, orden] = sort(energia, 'descend');
             energia_acumulada = 0;
-            mascara = zeros(size(X));
-            
+            X_nueva = zeros(size(X));
+
             for i = 1:N
-                energia_acumulada = energia_acumulada + A(idx(i))^2;
-                mascara(idx(i)) = 1;
-                if energia_acumulada / energia_total >= L
+                idx = orden(i);
+                energia_acumulada = energia_acumulada + energia(idx);
+                X_nueva(idx) = X(idx);
+                if energia_acumulada >= (L/100) * energia_total
                     break;
                 end
             end
-            
-            X_filtrado = X .* mascara;
+
+            X = X_nueva;
+
         otherwise
-            error('Modo no válido. Usar "amplitud" o "energia".');
+            error('Modo inválido. Usá ''amplitud'' o ''energia''.')
     end
-    
-    x_filtrada = real(ifft(X_filtrado)); % Señal resultante en el dominio temporal
+
+    x_filtrada = real(ifft(X));  % Señal filtrada
 end
