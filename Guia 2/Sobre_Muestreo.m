@@ -16,14 +16,12 @@ function Func = Sobre_Muestreo(Original,Factor)
     % Asignar valores
     Func(1:Factor:end) = Original;
 
-    % Visualización de resultados
-    figure;
-    stem(0:N-1, Original, 'filled');
-    hold on;
-    stem(0:(N * Factor - 1), Func, 'r');
-    hold off;
-    title('Sobremuestreo de la señal');
-    legend('Original', 'Sobremuestreada');
+    %Func = interp(Func,Factor);
+    %Func = Func(1:Factor:end);
+    %Filtro = FiltroPasaBajos(N*Factor,pi/Factor);
+    %FuncionEnFourrier = fft(Func);
+    %Func = Filtro.*FuncionEnFourrier; 
+    %Func = ifft(Func);
 
 end
 
