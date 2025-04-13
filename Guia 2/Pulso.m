@@ -1,6 +1,4 @@
-function [x, func] = Pulso(Tinicio, Tfinal, InicioPulso, Longitud, Amplitud)
-    % Definir el paso (ajustar si es necesario)
-    paso = 1;  
+function [x, func] = Pulso(Tinicio, Tfinal, InicioPulso, Longitud, Amplitud,paso)
     x = Tinicio:paso:Tfinal;  % Vector de tiempo
 
     func = zeros(size(x)); % Inicializar el vector de función

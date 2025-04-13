@@ -1,4 +1,4 @@
-function Graficador_Freqz(H, w)
+function Graficador_Freqz(H, w,Titulo)
     % Graficador_Funciones_Complejas - Dibuja 4 gráficas (modulo, fase, real, imag)
     % a partir de la respuesta en frecuencia H y el vector de frecuencias w.
     %
@@ -18,8 +18,12 @@ function Graficador_Freqz(H, w)
     parte_real = real(H);
     parte_imag = imag(H);
 
-    % Graficar
-    figure;
+     % Crear figura con o sin título
+    if nargin == 2
+        figure('Name', Titulo);
+    else
+        figure;
+    end
 
     subplot(2,2,1);
     plot(w, modulo, 'LineWidth', 1.5);

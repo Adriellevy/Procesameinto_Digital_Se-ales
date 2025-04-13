@@ -3,8 +3,6 @@ function [Filtro] = FiltroPasaBajos(Longitud,wc)
 %   Detailed explanation goes here
     x = ones(1,Longitud);
     x(wc+1:Longitud-wc)=0;
-    figure(2)
-    stem(x)
     Filtro = x;
 end
 
