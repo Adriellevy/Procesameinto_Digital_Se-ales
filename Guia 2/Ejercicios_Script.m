@@ -309,6 +309,7 @@
 % end
 
 % ----------------Ejercicio 20 submuestreo----------------
+% M_vals = [2, 4, 8];
 % [t,x_original]=Pulso(0,100,0,50,1,10^-1);
 % N = length(x_original);
 % f = (-N/2:N/2-1)*(1/(N*10^-3));
@@ -342,7 +343,7 @@
 
 
 %-----------------Ejercicio 22 y 23 sobremuestreo----------------
-% Señal original
+
 % [t, x] = Funcion_Sinc(5, 5e-2, 1, 0); 
 % 
 % figure('Name','Ejercicio 22 y 23')
@@ -388,6 +389,7 @@
 % wc = round(N / (2 * Factor)); 
 % Filtro = FiltroPasaBajos(N, wc);
 % 
+% 
 % subplot(3,2,4)
 % stem(w, Filtro, 'LineWidth', 1.5);
 % title(['Filtro Pasa Bajos (wc = ', num2str(wc), ')']);
@@ -398,6 +400,7 @@
 % 
 % % Aplicación del filtro en frecuencia
 % Resultado = TDF .* Filtro;
+% 
 % 
 % subplot(3,2,5)
 % plot(w, abs(Resultado), 'LineWidth', 1.5);
@@ -483,4 +486,78 @@
 %     grid on;
 % end
 
+
+
+%Ejercicios 22 y 23 re hechos con FiltroPasaBajosFaseCero
+
+[t, x] = Funcion_Sinc(5, 5e-2, 1, 0); 
+
+figure('Name','Ejercicio 22 y 23')
+subplot(3,2,1)
+stem(t, x, 'filled');
+title('Señal Original: x[n]');
+xlabel('Tiempo [s]');
+ylabel('Amplitud');
+grid on;
+xlim([min(t) max(t)]);
+
+% Aumento de resolución
+Factor = 3; 
+x_aumentada = Sobre_Muestreo(x, Factor);
+
+% Aplicación del filtro pasa bajos con fase cero
+OrdenFiltro = 30;         % Puedes ajustar el orden
+wc = 1 / Factor;          % Frecuencia de corte normalizada (Nyquist = 1)
+[x_filtrada, h] = FiltroPasaBajosFaseCero(x_aumentada, OrdenFiltro, wc);
+
+% Señal sobremuestreada
+subplot(3,2,2)
+stem(x_aumentada, 'filled');
+title(['Señal Sobremuestreada (Factor = ', num2str(Factor), ')']);
+xlabel('n');
+ylabel('Amplitud');
+grid on;
+xlim([0 length(x_aumentada)]);
+
+% FFT original
+TDF = fft(x_aumentada);
+M = length(TDF);
+w = linspace(0, 2*pi, M); 
+
+subplot(3,2,3)
+plot(w, abs(TDF), 'LineWidth', 1.5);
+title('Magnitud de la FFT de x[n]');
+xlabel('Frecuencia Normalizada \omega [rad/muestra]');
+ylabel('|X(e^{j\omega})|');
+grid on;
+xlim([0 2*pi]);
+
+% Coeficientes del filtro
+subplot(3,2,4)
+stem(0:length(h)-1, h, 'filled');
+title(['Coeficientes del Filtro FIR (orden = ', num2str(OrdenFiltro), ')']);
+xlabel('n');
+ylabel('h[n]');
+grid on;
+
+% FFT de la señal filtrada
+TDF_filtrada = fft(x_filtrada);
+
+subplot(3,2,5)
+plot(w, abs(TDF_filtrada), 'LineWidth', 1.5);
+title('FFT de la Señal Filtrada');
+xlabel('Frecuencia Normalizada \omega [rad/muestra]');
+ylabel('|Y(e^{j\omega})|');
+grid on;
+xlim([0 2*pi]);
+
+% Señal filtrada en el dominio temporal
+t_filtrada = linspace(0, 5, length(x_filtrada));
+
+subplot(3,2,6)
+stem(t_filtrada, real(x_filtrada), 'filled');
+title('Señal Filtrada en el Tiempo');
+xlabel('n');
+ylabel('Amplitud');
+grid on;
 
