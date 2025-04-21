@@ -105,7 +105,7 @@
 % % fs = 8000;
 % % Wn = 1000 / (fs/2); 
 % % b = fir1(N, Wn, rectwin(N+1));
-% % fvtool(b, 1); % fdatool para visualización
+% % fvtool(b, 1); % fdatool para visualizacion
 % 
 % 
 % % N = 67;
@@ -132,4 +132,57 @@
 % % fs = 8000;
 % % Wn = 1000 / (fs/2); 
 % % b = fir1(N, Wn, rectwin(N+1));
-% % fvtool(b, 1); % fdatool para visualización
+% % fvtool(b, 1); % fdatool para visualizacion
+
+
+
+
+
+% %-------------------Ejercicio 10---------------------
+% 
+% fs = 1*10^3; %hz
+% wc=2*pi*60; %rad
+% num = [wc]; 
+% den = [1 wc];
+% Hs=tf(num,den); 
+% bode(Hs);
+% [numz,denz]=bilinear(num,den,fs);
+% [TFS w]=freqz(numz,denz,512);
+% Graficador_Freqz(TFS,w,'Respuesta Filtro RC');
+% 
+
+
+%-------------------Ejercicio 11---------------------
+% 
+% fs = 1*10^3; %hz
+% wc=2*pi*60; %rad
+% num = [wc]; 
+% den = [1 wc];
+% Hs=tf(num,den); 
+% % bode(Hs);
+% [numz,denz]=bilinear(num,den,fs);
+% [TFS w]=freqz(numz,denz,512);
+% Graficador_Freqz(TFS,w,'Respuesta Filtro RC');
+% 
+% t=0:1/fs:(512-1)*(1/fs);
+% xt = 2*sin(2*pi*50*t)+ sin(2*pi*300*t);
+% figure(2)
+% subplot(2,1,1)
+% plot(t,xt)
+% yt = filter(numz,denz,xt)
+% subplot(2,1,2)
+% plot(yt);
+
+%-------------------Ejercicio 12---------------------
+fs = 200; %hz
+w0=2*pi*50; %(1/s)
+Q0=100;
+num = [1 0 w0^2]; 
+den = [1 w0/Q0 w0^2];
+Hs=tf(num,den); 
+%bode(Hs);
+[numz,denz]=bilinear(num,den,fs);
+[TFS w]=freqz(numz,denz,512);
+Graficador_Freqz(TFS,w,'Respuesta Filtro RC');
+
+
