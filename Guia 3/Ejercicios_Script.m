@@ -126,17 +126,76 @@
 % % Wn = [1000 2000] / (fs/2); 
 % % b = fir1(N, Wn, 'stop', rectwin(N+2));
 % % fvtool(b, 1);
+
+
+% N = 20;
+% fs = 8000;
+% Wn = 1000 / (fs/2); 
+% b = fir1(N, Wn, rectwin(N+1));
+% fvtool(b, 1); % fdatool para visualizacion
+%
+
+%---------------------------Ejercicio 5 ---------------------------
+
+
+
+
+%---------------------------Ejercicio 7 ----------------------
+% %Diseño de un filtro noch (elimina frecuencia muy fino
+% %La frecuiencia de eliminacion se toma pi*fe/fs 
+% %Por lo tanto theeta corte = 2/5 pi
+% %El noch FIR se caracteriza por tener todos los polos en el origen y con
+% %ceros conjugados
+% % K=? El modulo del filtro tiene que valer 1 en continua
+% % =>k=1/(2(1-cos(Theeta corte))) 
+% %El diseño del filtro cuenta con buscar la constante y a su vez saber bien las propiedades 
 % 
-% % 
-% % N = 20;
-% % fs = 8000;
-% % Wn = 1000 / (fs/2); 
-% % b = fir1(N, Wn, rectwin(N+1));
-% % fvtool(b, 1); % fdatool para visualizacion
+% fe=50; %hz
+% fs=250; 
+% Limites = fs/2; %(tomo la mitad del plano, porque sería como mi limite)
+% 
+% theetacorte = pi*2/5; %Sale de la regla de 3 mencionada arriba
+% h = [1/(2*(1-cos(theetacorte))) -cos(theetacorte)./(1-cos(theetacorte)) 1/(2*(1-cos(theetacorte))) ];
+%     
+% [H w] = freqz(h,1,512);
+% 
+% %Grafico en frecuencia
+% 
+% f=w*(fs/(2*pi));
+% % Abrir el archivo del ecg
+% fid = fopen('ecg_nt_Ejercicio_7.txt', 'r');
+% if fid == -1
+%     error('No se pudo abrir el archivo.');
+% end
+% 
+% % Leer datos (asume una columna de datos numéricos)
+% ecg = fscanf(fid, '%f\n');
+% 
+% % Cerrar archivo
+% fclose(fid);
+% 
+% t = (0:length(ecg)-1)/fs;
+% 
+% %Filtracion de la señal
+% 
+% y = filter(h,1,ecg);
+% % Graficar señal ECG
+% figure(1)
+% subplot(2,1,1)
+% plot(t, ecg);
+% xlabel('Tiempo (s)');
+% ylabel('Amplitud');
+% title('Señal ECG desde archivo con fopen');
+% grid on;
+% subplot(2,1,2)
+% plot(t,y)
+% %Graficacion del modulo del filtro notch 
+% figure(2)
+% plot(f,abs(H))
 
 
 
-
+%-------------------Ejercicio 8---------------------
 
 % %-------------------Ejercicio 10---------------------
 % 
@@ -174,15 +233,81 @@
 % plot(yt);
 
 %-------------------Ejercicio 12---------------------
-fs = 200; %hz
-w0=2*pi*50; %(1/s)
-Q0=100;
-num = [1 0 w0^2]; 
-den = [1 w0/Q0 w0^2];
-Hs=tf(num,den); 
-%bode(Hs);
-[numz,denz]=bilinear(num,den,fs);
-[TFS w]=freqz(numz,denz,512);
-Graficador_Freqz(TFS,w,'Respuesta Filtro RC');
+% fs = 200; %hz
+% w0=2*pi*50; %(1/s)
+% Q0=100;
+% num = [1 0 w0^2]; 
+% den = [1 w0/Q0 w0^2];
+% Hs=tf(num,den); 
+% %bode(Hs);
+% [numz,denz]=bilinear(num,den,fs);
+% [TFS w]=freqz(numz,denz,512);
+% Graficador_Freqz(TFS,w,'Respuesta Filtro RC');
 
+%-------------------Ejercicio 13 - 17 paso de filtros ---------------------
+% 
+ % Especificaciones
+fs = 1000;           % Frecuencia de muestreo en Hz
+fp = 100;            % Frecuencia de pasabanda en Hz
+fsb = 200;           % Frecuencia de detención en Hz
+Rp = 10;              % Atenuación en pasabanda (dB)
+Rs = 100;            % Atenuación en banda de detención (dB)
+
+% Normalización de frecuencias (0 a 1, donde 1 corresponde a fs/2)
+Wp = 1 *2*pi;    
+Ws = 1/2 *2*pi;   
+
+% Orden de Butterworth
+[ButOrd, Wn_butter] = buttord(Wp, Ws, Rp, Rs,'s');
+
+% Orden de Chebyshev tipo I
+[ChevOrd, Wn_cheby] = cheb1ord(Wp, Ws, Rp, Rs,'s');
+
+% Orden de Elíptico
+[EliOrd, Wn_ellip] = ellipord(Wp, Ws, Rp, Rs,'s');
+
+% Diseño de filtros con sus órdenes respectivos
+[bButter, aButter] = butter(ButOrd, Wn_butter,'s');
+[bCheby, aCheby]   = cheby1(ChevOrd, Rp, Wn_cheby,'s');
+[bElipt, aElipt]   = ellip(EliOrd, Rp, Rs, Wn_ellip,'s');
+
+%Pasaaltoscheby
+[HighbChevy,HighaCheby]=lp2hp(bCheby,aCheby,2*pi*1000);
+[numz,denz]=bilinear(HighbChevy,HighaCheby,fs);
+ 
+% Frecuencia para evaluar la respuesta
+[Hbutter, f] = freqz(bButter, aButter, 1024, fs);
+Hcheby = freqz(bCheby, aCheby, 1024, fs);
+Hellip = freqz(bElipt, aElipt, 1024, fs);
+
+%Cheby pasa altos
+[HighHcheby,w] = freqz(numz, denz, 1024, fs);
+
+plot(w,abs(HighHcheby))
+
+% % Subplot de las respuestas en frecuencia
+% figure;
+% subplot(3,1,1);
+% plot(f, 20*log10(abs(Hbutter)));
+% grid on;
+% title(['Filtro Butterworth (Orden = ' num2str(ButOrd) ')']);
+% xlabel('Frecuencia (Hz)');
+% ylabel('Magnitud (dB)');
+% ylim([-120 5]);
+% 
+% subplot(3,1,2);
+% plot(f, 20*log10(abs(Hcheby)));
+% grid on;
+% title(['Filtro Chebyshev I (Orden = ' num2str(ChevOrd) ')']);
+% xlabel('Frecuencia (Hz)');
+% ylabel('Magnitud (dB)');
+% ylim([-120 5]);
+% 
+% subplot(3,1,3);
+% plot(f, 20*log10(abs(Hellip)));
+% grid on;
+% title(['Filtro Elíptico (Orden = ' num2str(EliOrd) ')']);
+% xlabel('Frecuencia (Hz)');
+% ylabel('Magnitud (dB)');
+% ylim([-120 5]);
 
