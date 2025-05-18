@@ -24,6 +24,7 @@ w1 = zeros(1, N);
 y = zeros(1, N);
 e = zeros(1, N);  
 mu = 0.5;
+
 for k = 2:N
     y(k) = w0(k-1)*x(k) + w1(k-1)*x(k-1);    % salida del filtro
     e(k) = d(k) - y(k);                      % error
