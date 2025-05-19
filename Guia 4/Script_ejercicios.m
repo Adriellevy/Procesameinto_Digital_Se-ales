@@ -177,4 +177,7 @@
 
 %Ejercicio 8
 
-
+% [Bk,Ak,yk,ek]=ARMA_Adaptativo(mic2,mic1,15,0);
+% plot(ek)
+%[Bk, Ak, yk, ek] = ARMA_Adaptativo(mic2, mic1, 15, 0);
+sound(ek(250000:280000),fs);
