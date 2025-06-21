@@ -1,0 +1,8 @@
+function [ B ] = CalcularInversaZ(x)
+    
+    A = ifft(1/fft(x)); 
+    B = (1/A); 
+    
+
+end
+
